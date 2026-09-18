@@ -1,0 +1,12 @@
+#!/bin/sh
+cd "$(dirname "$0")"
+printf "Senha da página: "; stty -echo; read PW; stty echo; echo
+npx -y staticrypt source/index.html -p "$PW" -d encrypted --short --remember 30 \
+  --template-title "Aulas Dalton Lab" \
+  --template-instructions "Página interna do marketing do Dalton Lab. Digite a senha pra abrir." \
+  --template-button "Entrar" --template-placeholder "Senha" --template-error "Senha incorreta" \
+  --template-remember "Lembrar neste dispositivo por 30 dias" \
+  --template-toggle-show "Mostrar senha" --template-toggle-hide "Ocultar senha" \
+  --template-color-primary "#0A1628" --template-color-secondary "#F4F7FB" >/dev/null
+cp encrypted/index.html index.html
+git add -A && git commit -q -m "Atualiza as aulas ($(date +%d/%m\ %H:%M))" && git -c credential.helper=osxkeychain push -q && echo "publicado; o Pages atualiza em ~1 min"
